@@ -10,7 +10,7 @@ ENV         DEBIAN_FRONTEND noninteractive
 # Install Dependencies
 RUN         dpkg --add-architecture i386 \
             && apt-get update \
-            && apt-get install -y wget curl libstdc++6:i386 \
+            && apt-get install -y bash wget curl libstdc++6:i386 \
             && useradd -m -d /home/container container
 
 WORKDIR     /opt/steamcmd
