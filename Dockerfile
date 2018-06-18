@@ -13,14 +13,16 @@ RUN         dpkg --add-architecture i386 \
             && apt-get install -y wget curl libstdc++6:i386 \
             && useradd -m -d /home/container container
 
+WORKDIR     /opt/steamcmd
+RUN         curl -sSLO http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
+            && tar -zxvf steamcmd_linux.tar.gz -C /opt/steamcmd \
+            && chown -R container:container /opt/steamcmd
+
 USER        container
 ENV         HOME /home/container
 WORKDIR     /home/container
 
-RUN         curl -sSLO http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
-            && mkdir steamcmd \
-            && tar -zxvf steamcmd_linux.tar.gz -C ./steamcmd \
-            && ./steamcmd/steamcmd.sh +login anonymous +quit
+RUN         /opt/steamcmd/steamcmd.sh +login anonymous +quit
 
 COPY        ./entrypoint.sh /entrypoint.sh
 CMD         ["/bin/bash", "/entrypoint.sh"]

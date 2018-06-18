@@ -4,7 +4,7 @@ sleep 5
 cd /home/container
 
 if [[ ${UPDATE} == "1" ]]; then
-    ./steamcmd/steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} +force_install_dir /home/container +app_update ${APP_ID} validate +quit
+    /opt/steamcmd/steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} +force_install_dir /home/container +app_update ${APP_ID} validate +quit
 fi
 
 # Replace Startup Variables
