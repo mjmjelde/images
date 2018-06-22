@@ -3,14 +3,14 @@
 # Environment: Source Engine
 # Minimum Panel Version: 0.6.0
 # ----------------------------------
-FROM        ubuntu:16.04
+FROM        debian:stable-slim
 
 MAINTAINER  Pterodactyl Software, <support@pterodactyl.io>
 ENV         DEBIAN_FRONTEND noninteractive
 # Install Dependencies
 RUN         dpkg --add-architecture i386 \
             && apt-get update \
-            && apt-get install -y bash wget curl libstdc++6:i386 \
+            && apt-get install -y tmux wget curl libstdc++6:i386 \
             && useradd -m -d /home/container container
 
 WORKDIR     /opt/steamcmd
