@@ -13,7 +13,7 @@ RUN         echo 'debconf debconf/frontend select Noninteractive' | debconf-set-
 # Install Dependencies
 RUN         dpkg --add-architecture i386 \
                 && apt-get update \
-                && apt-get install -y lib32gcc1 libstdc++6 libstdc++6:i386 libtbb2:i386 libtbb2 wget net-tools binutils libssl1.0.0:i386 \
+                && apt-get install -y curl lib32gcc1 libstdc++6 libstdc++6:i386 libtbb2:i386 libtbb2 wget net-tools binutils libssl1.0.0:i386 \
                 && useradd -m -d /home/container container
 
 WORKDIR     /opt/steamcmd
