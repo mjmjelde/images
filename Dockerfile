@@ -20,6 +20,9 @@ RUN apt-get install -y ffmpeg wget gnupg ca-certificates \
 
 RUN npm install -g typescript
 
+RUN addgroup -g 1001 container || true && \
+     adduser -D -u 1001 -G `getent group 1001 | cut -d: -f1` container || true
+
 USER container
 ENV     USER=container HOME=/home/container
 WORKDIR /home/container
