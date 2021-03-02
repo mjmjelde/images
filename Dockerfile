@@ -1,28 +1,26 @@
-FROM node:14
+# ----------------------------------
+# Environment: debian:buster-slim
+# Minimum Panel Version: 0.7.X
+# ----------------------------------
+FROM quay.io/parkervcp/pterodactyl-images:base_debian
 
-LABEL author="Matthew Mjelde" maintainer="mjmjelde@gmail.com"
+LABEL author="Michael Parker" maintainer="parker@pterodactyl.io"
 
-RUN apt-get update -y
-RUN apt-get install -y ffmpeg wget gnupg ca-certificates \
-     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-     && apt-get update \
-     # We install Chrome to get all the OS level dependencies, but Chrome itself
-     # is not actually used as it's packaged in the node puppeteer library.
-     # Alternatively, we could could include the entire dep list ourselves
-     # (https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix)
-     # but that seems too easy to get out of date.
-     && apt-get install -y google-chrome-stable \
-     && rm -rf /var/lib/apt/lists/* \
-     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
-     && chmod +x /usr/sbin/wait-for-it.sh \
-     && useradd -m -d /home/container container
+## install reqs
+RUN dpkg --add-architecture i386 \
+ && apt update \
+ && apt upgrade -y \
+ && apt install -y libssl1.1:i386 libtinfo6:i386 libtbb2:i386 libtinfo5:i386 libcurl4-gnutls-dev:i386 libcurl4:i386 libncurses5:i386 libcurl3-gnutls:i386 libtcmalloc-minimal4:i386 faketime:i386 libtbb2:i386 \
+    lib32tinfo6 lib32stdc++6 lib32z1 libtbb2 libtinfo5 libstdc++6 libreadline5 libncursesw5 libfontconfig1 libnss-wrapper gettext-base
 
-RUN npm install -g typescript
+## install rcon
+RUN cd /tmp/ \
+ && curl -sSL https://github.com/gorcon/rcon-cli/releases/download/v0.9.0/rcon-0.9.0-amd64_linux.tar.gz > rcon.tar.gz \
+ && tar xvf rcon.tar.gz \
+ && mv rcon-0.9.0-amd64_linux/rcon /usr/local/bin/
 
-USER container
-ENV     USER=container HOME=/home/container
-WORKDIR /home/container
+USER        container
+ENV         HOME /home/container
+WORKDIR     /home/container
 
-COPY ./entrypoint.sh    /entrypoint.sh
-CMD ["/bin/bash", "/entrypoint.sh"]
+COPY ./entrypoint.sh /entrypoint.sh
