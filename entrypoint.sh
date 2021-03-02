@@ -39,6 +39,13 @@ else
     echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
+echo -e "Base Startup: ${STARTUP}"
+
+# Replace Startup Variables
+MODIFIED_STARTUP=$(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
+echo -e ":/home/container$ ${MODIFIED_STARTUP}"
+echo -e "${MODIFIED_STARTUP}"
+
 # ValheimPlus variables
 export DOORSTOP_ENABLE=TRUE
 export DOORSTOP_INVOKE_DLL_PATH=/home/container/BepInEx/core/BepInEx.Preloader.dll
@@ -49,13 +56,6 @@ export LD_PRELOAD=libdoorstop_x64.so:$LD_PRELOAD
 
 # export LD_LIBRARY_PATH=/home/container/linux64:$LD_LIBRARY_PATH
 # export SteamAppId=892970
-
-echo -e "Base Startup: ${STARTUP}"
-
-# Replace Startup Variables
-MODIFIED_STARTUP=$(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
-echo -e ":/home/container$ ${MODIFIED_STARTUP}"
-echo -e "${MODIFIED_STARTUP}"
 
 # Run the Server
 eval ${MODIFIED_STARTUP}
