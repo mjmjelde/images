@@ -50,6 +50,8 @@ export LD_PRELOAD=libdoorstop_x64.so:$LD_PRELOAD
 export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH
 export SteamAppId=892970
 
+echo -e "Base Startup: ${STARTUP}"
+
 # Replace Startup Variables
 MODIFIED_STARTUP=$(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo -e ":/home/container$ ${MODIFIED_STARTUP}"
