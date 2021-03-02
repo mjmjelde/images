@@ -29,7 +29,7 @@ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
     IGNORE_DIR=""
     if [ -f "./BepInEx/config/valheim_plus.cfg" ]; then
       echo -e "Previous install found.  Adding exclude option for configuration files"
-      IGNORE_DIR="--exclude=""BepinEx/config"""
+      IGNORE_DIR="--exclude=""BepInEx/config"""
     fi
     
     curl -s https://api.github.com/repos/valheimPlus/ValheimPlus/releases/latest | jq '.assets[] | select(.name == "UnixServer.tar.gz") | .browser_download_url' -r | wget -O UnixServer.tar.gz -i -
