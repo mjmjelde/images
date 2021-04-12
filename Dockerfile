@@ -4,9 +4,9 @@
 # level distribution of Pterodactyl.
 FROM mhart/alpine-node:14
 WORKDIR /app
-RUN apk --no-cache add curl grep wget jq
-RUN wget -o panel.tar.gz https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
-RUN tar zxf panel.tar.gz
+RUN apk --no-cache add curl grep wget jq unzip
+RUN wget -o panel.zip https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
+RUN unzip panel.zip
 # COPY . ./
 RUN yarn install --frozen-lockfile \
     && yarn run build:production
@@ -15,9 +15,9 @@ RUN yarn install --frozen-lockfile \
 # Build the actual container with all of the needed PHP dependencies that will run the application.
 FROM php:7.4-fpm-alpine
 WORKDIR /app
-RUN apk --no-cache add curl grep wget jq
-RUN wget -o panel.tar.gz https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
-RUN tar zxf panel.tar.gz
+RUN apk --no-cache add curl grep wget jq unzip
+RUN wget -o panel.zip https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
+RUN unzip panel.zip
 COPY --from=0 /app/public/assets ./public/assets
 RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot \
     && docker-php-ext-configure zip \
