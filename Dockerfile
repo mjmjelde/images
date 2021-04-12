@@ -10,7 +10,7 @@ RUN apk add --no-cache git
 
 WORKDIR /app
 
-RUN git clone https://github.com/tribalwarshelp/cron
+RUN git clone https://github.com/tribalwarshelp/cron .
 
 RUN go mod download
 
