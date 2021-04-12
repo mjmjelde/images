@@ -2,25 +2,33 @@
 # Environment: debian:buster-slim
 # Minimum Panel Version: 0.7.X
 # ----------------------------------
-FROM quay.io/parkervcp/pterodactyl-images:base_debian
+FROM golang:alpine as builder
 
 LABEL author="Matthew Mjelde" maintainer="mjmjelde@gmail.com"
 
-## install reqs
-RUN dpkg --add-architecture i386 \
- && apt update \
- && apt upgrade -y \
- && apt install -y libssl1.1:i386 libtinfo6:i386 libtbb2:i386 libtinfo5:i386 libcurl4-gnutls-dev:i386 libcurl4:i386 libncurses5:i386 libcurl3-gnutls:i386 libtcmalloc-minimal4:i386 faketime:i386 libtbb2:i386 \
-    lib32tinfo6 lib32stdc++6 lib32z1 libtbb2 libtinfo5 libstdc++6 libreadline5 libncursesw5 libfontconfig1 libnss-wrapper gettext-base jq libc6-dev
+RUN apk add --no-cache git
 
-## install rcon
-RUN cd /tmp/ \
- && curl -sSL https://github.com/gorcon/rcon-cli/releases/download/v0.9.0/rcon-0.9.0-amd64_linux.tar.gz > rcon.tar.gz \
- && tar xvf rcon.tar.gz \
- && mv rcon-0.9.0-amd64_linux/rcon /usr/local/bin/
+WORKDIR /app
 
-USER        container
-ENV         HOME /home/container
-WORKDIR     /home/container
+RUN git clone https://github.com/tribalwarshelp/cron
 
-COPY ./entrypoint.sh /entrypoint.sh
+RUN go mod download
+
+RUN go build -o main .
+
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /app
+
+COPY --from=builder /app/main .
+
+ENV MODE=production
+EXPOSE 8080
+
+RUN apk add --no-cache tzdata
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait ./wait
+RUN chmod +x ./wait
+
+CMD ./wait && ./main
