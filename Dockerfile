@@ -5,7 +5,7 @@
 FROM mhart/alpine-node:14
 WORKDIR /app
 RUN apk --no-cache add curl grep wget jq
-RUN curl -s https://api.github.com/repos/pterodactyl/panel/releases/latest | jq -r '.assets[] | select(.browser_download_url | contains("tar.gz")) | .browser_download_url' | wget -qi -
+RUN wget -o panel.tar.gz https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
 RUN tar zxf panel.tar.gz
 # COPY . ./
 RUN yarn install --frozen-lockfile \
@@ -16,7 +16,7 @@ RUN yarn install --frozen-lockfile \
 FROM php:7.4-fpm-alpine
 WORKDIR /app
 RUN apk --no-cache add curl grep wget jq
-RUN curl -s https://api.github.com/repos/pterodactyl/panel/releases/latest | jq -r '.assets[] | select(.browser_download_url | contains("tar.gz")) | .browser_download_url' | wget -qi -
+RUN wget -o panel.tar.gz https://github.com/pterodactyl/panel/archive/refs/tags/v1.3.2.zip
 RUN tar zxf panel.tar.gz
 COPY --from=0 /app/public/assets ./public/assets
 RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot \
